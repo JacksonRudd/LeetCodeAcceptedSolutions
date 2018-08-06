@@ -1,0 +1,37 @@
+//https://leetcode.com/problems/zigzag-conversion/
+
+import java.util.Arrays;
+
+class Solution {
+    
+	
+	public static String convert(String s, int numRows) {
+        if(numRows == 1){
+            return s;
+        }
+        String[] topToBottom = new String[numRows];
+        Arrays.fill(topToBottom, "");
+        int row = 0;
+        for(int i = 0; i< s.length(); i++){
+        	row = whichRow(i,numRows);
+        	System.out.print(row);
+            topToBottom[row]= topToBottom[row] + s.charAt(i);
+            }
+            
+        String answer = "";
+        for(int j = 0; j< numRows; j++) {
+            answer = answer + topToBottom[j];
+        }
+        return answer;
+    }
+        
+    public static int whichRow(int charNumber, int numRows) {
+        int mod = 2*numRows - 2;
+        int charNumberMod = charNumber%(mod);
+        return Math.min(mod - charNumberMod, charNumberMod);
+        
+    }
+
+
+
+}

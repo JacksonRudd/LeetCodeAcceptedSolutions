@@ -1,0 +1,149 @@
+//https://leetcode.com/problems/median-of-two-sorted-arrays/
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class Solution {
+    
+    public static double indexTop;
+    public static double indexBottom;
+    public static extendedArray Etop;
+    public static extendedArray Ebottom;
+	
+ 
+	
+	public static double findMedianSortedArrays(int[] A, int[] B) {
+		Etop = new Solution.extendedArray(A);
+		Ebottom = new Solution.extendedArray(B);
+        specialBinarySearch();
+        
+        return getMedian();
+	}
+
+	public static void specialBinarySearch() {
+		double searchEnd = Math.min( ( (double)( Etop.length + Ebottom.length)) / 2 - 0.5, Etop.length - 0.5);
+		double searchBegin = Math.max( ( (double)( Etop.length - Ebottom.length)) / 2 - 0.5, - 0.5);
+		String LoR;
+		double half;
+
+		while (true) {
+			half = (searchBegin + searchEnd) / 2.0;
+			indexTop = Math.round(2 * half) / 2.0;
+			LoR = leftOrRight();
+			if (indexTop == searchEnd) 
+				searchEnd -= 0.5;
+			else if (indexTop == searchBegin)
+				searchEnd += 0.5;
+
+			if ( LoR.equals("Right") ) 
+				searchBegin = Math.round(2 * half) / 2.0;
+			else if ( LoR.equals("Left") )
+				searchEnd =  Math.round(2 * half) / 2.0;
+			else if ( LoR.equals("Done") )
+				break;
+		}
+		
+	}
+	
+	public static void changeIndexOfOther() {
+		int lengthTop = Etop.length;
+		int lengthBottom = Ebottom.length;
+  
+		indexBottom = ( (double) lengthTop + (double) lengthBottom ) / 2 - (double) indexTop - 1;
+    }
+	
+    public static String leftOrRight() {
+    		changeIndexOfOther( );
+        boolean topBeatsBottom;
+        boolean bottomBeatsTop;
+       
+        topBeatsBottom = 
+        		Etop.valueAt((int) side(indexTop, "Right", Etop.length)) >=
+        		Ebottom.valueAt((int) side(indexBottom ,"Left", Ebottom.length));
+        bottomBeatsTop = 
+        		Ebottom.valueAt((int) side(indexBottom,"Right", Ebottom.length)) >= 
+        		Etop.valueAt((int) side(indexTop, "Left",Etop.length));
+        
+        String move;
+        if (bottomBeatsTop && topBeatsBottom) 
+        		move = "Done";	
+        else if (!topBeatsBottom)
+        		move = "Right";
+        else 
+        		move = "Left";
+        
+        return move;
+    }
+    
+    public static int side(double index, String LorR, int length) {
+        double answer = 0;
+        
+	    	if (index >= length-1 && LorR == "Right")
+	    		answer= length+1;
+	    	if (index <= 0 && LorR == "Left")
+	    		answer = -1;
+	    	
+    		if (index % 1 == 0){
+            if(LorR=="Left" )
+            		answer = index - 1;
+            if (LorR=="Right")
+                answer = index + 1;
+        }
+    		
+        if (index % 1 == 0.5) {
+            if (LorR == "Left")
+            		answer = index - 0.5;
+            if (LorR == "Right")
+            		answer = index + 0.5;
+        }
+        
+        return (int) answer;
+    }
+    
+    public static double getMedian() {
+    		int leftTop     = Math.max(side(indexTop, "Left", Etop.length), -1);
+		int rightTop    = Math.min(side(indexTop, "Right", Etop.length), Etop.length);
+		int leftBottom  = Math.max(side(indexBottom, "Left", Ebottom.length - 1), -1);
+		int rightBottom = Math.min(side(indexBottom, "Right", Ebottom.length), Ebottom.length);
+		double[] finalArray = new double[2 + (rightTop - leftTop) + (rightBottom - leftBottom)];
+		
+		int indexFinal = 0;
+		for (int i = leftTop; i<=rightTop; i++) {
+			finalArray[indexFinal] = Etop.valueAt(i);
+			indexFinal += 1;
+		}
+		for (int i = leftBottom; i <= rightBottom; i++) {
+			finalArray[indexFinal] = Ebottom.valueAt(i);
+			indexFinal += 1;
+		}
+	    
+		Arrays.sort(finalArray);
+	    	double median;
+	    	if (finalArray.length % 2 == 0)
+	    	    median = ((double) finalArray [finalArray.length / 2] +
+	    	    		(double) finalArray[finalArray.length / 2 - 1]) / 2;
+	    	else
+	    	    median = (double) finalArray[finalArray.length / 2];	    	
+	    	return median;
+    }
+    
+    private static class extendedArray {
+    		public int[] arr;
+	    	public int length;
+	    	
+	    	public extendedArray(int[] a) {
+	    		this.arr = a;
+	    		this.length = this.arr.length;		
+	    	}
+	    	
+	    	public double valueAt(int index) {
+	    		if (0 <= index && index <= this.length - 1) 
+	    			return (double) arr[index];
+	    		
+	    		if (index > this.length-1)
+	    			return Double.POSITIVE_INFINITY; 
+	    		else
+	    			return Double.NEGATIVE_INFINITY;
+	    	}
+    }
+}

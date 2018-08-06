@@ -1,0 +1,21 @@
+//https://leetcode.com/problems/two-sum/
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer,Integer> ref = new HashMap<>();
+        int length = nums.length;
+        int[] answer = new int[2];
+
+        for(int i = 0; i < length; i++) {
+            ref.put(target - nums[i], i);
+        }
+        for(int i = 0; i < length; i++) {
+            if(ref.containsKey(nums[i])) {
+                if(i != ref.get(nums[i])){
+                    answer[0] = i;
+                    answer[1] = ref.get(nums[i]);
+                }
+            }
+        }
+        return answer;
+    }
+}

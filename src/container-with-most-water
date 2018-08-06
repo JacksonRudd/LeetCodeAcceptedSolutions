@@ -1,0 +1,80 @@
+//https://leetcode.com/problems/container-with-most-water/
+public class Solution {
+    public static int maxArea(int[] height) {
+
+        HeightArray heightArray = new HeightArray(height);
+    	return maxArea(heightArray);    	
+    }
+
+	public static int maxArea(HeightArray heightArray) {
+		
+        int maxArea = 0;
+        int currentArea = 0;
+        
+        while(heightArray.rightIndex > heightArray.leftIndex){
+            currentArea = heightArray.getCurrentArea();
+            maxArea = Math.max(maxArea, currentArea);
+            if(heightArray.getLeftHeight() > heightArray.getRightHeight()){
+			    heightArray.changeRightIndex();
+		    }else{
+                heightArray.changeLeftIndex();    
+            }   
+
+        }
+        return maxArea;
+    }
+}
+    
+class HeightArray {
+	int[] heights;
+	int length;
+	int leftIndex;
+	int rightIndex;
+
+	public int getRightHeight(){
+		return heights[rightIndex];
+	}
+
+	public int getLeftHeight(){
+		return heights[leftIndex];
+	}
+	
+	public HeightArray(int[] h){
+		this.heights = h;
+		length = heights.length;
+		leftIndex = 0;
+		rightIndex = length - 1;		
+	}
+	
+	public void changeLeftIndex(){
+
+		for(int i = leftIndex; i < length; i++){
+			if(heights[i] > heights[leftIndex]){
+				leftIndex = i;
+				return;
+			}
+		}
+		leftIndex = length - 1;
+			
+	}
+	
+	public void changeRightIndex(){
+		for(int i = rightIndex; i >= 0; i--){
+			if(heights[i] > heights[rightIndex]){
+				rightIndex = i;
+				return;
+			}
+		}
+		rightIndex = 0;
+	}
+
+
+	
+	public int getCurrentArea(){
+
+		if(rightIndex <= leftIndex){
+			return 0;
+		}
+		return (rightIndex-leftIndex)*Math.min(getLeftHeight(), getRightHeight());
+	}
+}

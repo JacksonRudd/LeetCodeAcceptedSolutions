@@ -1,0 +1,96 @@
+
+//https://leetcode.com/problems/3sum/
+public class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+    	Product product = new Product();
+        
+        Map<Integer, Integer> map = new HashMap<Integer,Integer>();
+        
+
+        for(int i: nums){
+            if(map.containsKey(i)){
+                map.put(i, map.get(i)+1);
+            }else{
+                map.put(i,1);    
+            }
+        }
+        List<Integer> iter = new ArrayList(map.keySet());
+
+        int I;
+        int J;
+        int K;
+        for(int i = 0; i<iter.size();i++){
+            for(int j = i; j<iter.size();j++){
+                I = iter.get(i);
+                J = iter.get(j);
+                K = -(I+J);
+                if(K==0 && I == 0 && J==0){
+                    if(map.get(0)>=3){
+                        product.safeAdd(0,0);
+                    }
+                    continue;
+                }
+                if(I==K || J==K){
+                  if(map.get(K) >= 2){
+                      product.safeAdd(I,J);
+                  }  
+                  continue;
+
+                }
+                
+                if(I==J){
+                    if(map.containsKey(K) && map.get(I) >= 2){
+                      product.safeAdd(I,J);
+                  } 
+                      continue;
+                }
+                if(map.containsKey(K)){
+                    product.safeAdd(I,J);
+                }    
+            }
+        }
+        
+    	return product.solution;
+        
+    }
+}
+
+class Product {
+	Set<Integer> pairings;
+	List<List<Integer>> solution;
+	
+	public Product(){
+		pairings = new HashSet<Integer>();
+		solution = new ArrayList<List<Integer>>();
+	}
+	
+	public Integer pairing(Integer i, Integer j, Integer k ){
+		int min = Math.min(i, Math.min(j, k));
+		int  max= Math.max(i, Math.max(j, k));
+        if(min > 0){
+            min = 2*min;
+        }else{
+            min = -2*min - 1;
+        }
+        if(max > 0){
+            max = 2*max;
+        }else{
+            min = -2*max - 1;
+        }
+        return  (max+min)*(max+min+1) + 2*max  ;
+	}
+	public void safeAdd(int i, int j){
+        int k = -(i+j);
+		int pair = pairing(i, j , k);
+		if(!pairings.contains(pair) ){
+			 ArrayList<Integer> list = new ArrayList<Integer>() {{
+                 add(i);
+                 add(j);
+                 add(-(i+j));
+             }};
+            solution.add(list);
+            pairings.add(pair);
+		}
+	}
+	
+}

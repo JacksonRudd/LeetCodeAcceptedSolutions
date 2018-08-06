@@ -1,0 +1,32 @@
+//https://leetcode.com/problems/two-sum-iv-input-is-a-bst/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean findTarget(TreeNode root, int k) {
+        return Solution.test(root,root,k);
+    }
+   
+    private static boolean test(TreeNode a, TreeNode b, int target) {
+        
+        if((a == null) || (b == null))
+            return false;
+        int sum = a.val + b.val;
+        if(sum ==  target && (a != b))
+            return true;
+        if(sum < target){
+            return test(a.right, b, target) || test(a, b.right, target);            
+        } else{
+            return test(a.left, b, target) || test(a, b.left, target);
+        }            
+    }
+    
+
+}

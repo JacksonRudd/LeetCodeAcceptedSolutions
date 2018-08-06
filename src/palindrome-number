@@ -1,0 +1,59 @@
+//https://leetcode.com/problems/palindrome-number/
+
+public class Solution {
+	public static boolean isPalindrome(Integer i){
+        if(i<0){            
+            return false;
+        }
+		Number num = new Number(i);
+		Integer length = num.getLength();
+		boolean answer = true;
+		for(int x = 1; x< length; x++){
+			//length -1 +1 = length
+			if(num.getNthDigit(x) != num.getNthDigit(length - x + 1)){
+				answer = false;
+			}
+		}
+		return answer;
+	}
+    
+}
+    
+    class Number {
+        public Integer number;
+        // bigger than 10^10 
+
+        public Number(Integer i){
+            this.number = i;
+        }
+
+        public Integer getNthDigit(Integer N){
+
+            //number is 1234, lets find the second digit
+            Integer answer = number;
+            //1234% 100 is 34
+            answer = (int) (answer % Math.pow(10, N));
+            //32- (32 % 10) is 30
+            answer = (int) (answer - (answer % Math.pow(10, N - 1)));
+            // 30 / 10 = 3
+            answer = (int) (answer/ Math.pow(10, N - 1));
+            return answer;
+
+        }
+
+        public Integer getLength(){
+            if(number > 1000000000){
+                return 10;
+            }
+
+            int length = 1;
+            //length of 2345 is 4 
+            // because 10,000 = 10^5 is the first number bigger than it. 
+            while(Math.pow(10, length) <=number){
+                length += 1;
+            }
+            return length;
+
+
+        }
+    }
